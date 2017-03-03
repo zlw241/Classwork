@@ -1,4 +1,7 @@
+require_relative "searchable"
+
 class PolyTreeNode
+  include Searchable
   attr_accessor :children, :value, :parent
 
   def initialize(value = nil)
@@ -26,32 +29,28 @@ class PolyTreeNode
 
   def add_child(child_node)
     child_node.parent = self
+    self
+  end
+
+  def add_many(many_childs)
+    many_childs.each { |c| self.add_child(c) }
+    self
   end
 
   def remove_child(child_node)
     raise "Error" if child_node.parent.nil?
     self.children.delete(child_node)
     child_node.parent = nil
+    self
   end
 
-  def dfs(target)
-    if self.value == target
-      return self
-    else
-      children.each { |child| return child.dfs(target) unless child.dfs(target).nil?}
-    end
+
+  def has_children?
+    self.children != []
   end
+
+  def inspect
+    "#{{value: self.value, parent: self.parent, children: self.children }}"
+  end
+
 end
-
-
-# n1 = PolyTreeNode.new("root1")
-# n2 = PolyTreeNode.new("root2")
-# n3 = PolyTreeNode.new("root3")
-
-# connect n3 to n1
-# n3.parentent = n1
-# connect n3 to n2
-# n3.add_child(n2)
-# p n1
-# p n2
-# p n3
